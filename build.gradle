@@ -1,17 +1,71 @@
+import java.nio.charset.StandardCharsets
+
 plugins {
     id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+application {
+    mainClass = 'de.cae.Main'
+}
+//mainClassName = 'de.cae.Main'
+
+String pathToJar = "program/.program"
+
+group 'de.cae'
+version '1.0'
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+javadoc {
+    options.encoding = 'UTF-8'
+    options.docEncoding = 'UTF-8'
+    options.charSet = 'UTF-8'
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+}
+
+shadowJar {
+    outputs.upToDateWhen { false }
+    doFirst {
+        // ProcessBuilder processBuilder = new ProcessBuilder()
+        // processBuilder.command("rm", "./program/.program/gro_pro.jar")
+        // processBuilder.start()
+        println "Jar deleted"
+    }
+    //setMainClassName("de.cae.Main")
+    archiveBaseName.set("gro_pro")
+    archiveClassifier.set("")
+    archiveVersion.set("")
+    destinationDirectory.set(new File(pathToJar))
+    configurations = [project.configurations.compileClasspath]
+    doLast {
+        println "Jar generated"
+    }
+}
+
+task runShadowJar {
+    outputs.upToDateWhen { false }
+    group "application"
+    doLast {
+        ProcessBuilder processBuilder = new ProcessBuilder()
+        processBuilder.command("bash",
+                "./program/run_gro_pro.sh",
+                "-input",
+                "/home/niklas/IdeaProjects/GroPro_Vorbereitung/input/input.txt",
+                "-output",
+                "/home/niklas/IdeaProjects/GroPro_Vorbereitung/input/output.txt")
+        Process process = processBuilder.start()
+        println(new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8))
+    }
 }
 
 test {
