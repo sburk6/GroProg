@@ -30,7 +30,7 @@ public class CmdParser {
                     System.exit(0);
                 }
                 default -> {
-                    System.out.println("Invalid argument: " + args[i]);
+                    System.out.println("Invalid argument: " + args[i] + "\n");
                     printHelp();
                     System.exit(0);
                 }
@@ -44,7 +44,7 @@ public class CmdParser {
         //TODO Beschreibung anpassen
          System.out.println(
                 """
-                    Benutzung: -i <inputFile> -o <outputFile> (-l [true, false, file]) (-lvl[info, warning]) (-h)
+                    Benutzung: -i <inputFile> -o <outputFile> (-l [true, false, file]) (-lvl [info, warning]) (-h)
                     
                     Kurzbeschreibung hier.
                     
@@ -53,8 +53,8 @@ public class CmdParser {
                     -o <outputFile>, --output <outputFile>                  Pfad der Ausgabedatei
                     
                     Optionale Parameter:
-                    -l [true, false, file], -log [true, false, file]        Log in der Konsole oder in Datei, default = "false"
-                    --loglvl [info, warning]                                Nur Informationen oder Warnungen loggen
+                    -l [true, false, file], -log [true, false, file]        Log in der Konsole oder in Datei, default: "false"
+                    -lvl [info, warning], --loglvl [info, warning]          Nur Informationen oder Warnungen loggen, default: "all"
                     -h, --help                                              Diese Hilfenachricht anzeigen und Programm beenden
                 """);
     }
