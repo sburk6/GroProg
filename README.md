@@ -26,7 +26,7 @@ Durch das Nutzen des -h Parameters (oder --help) kann folgende Parametererkläru
  
     Optionale Parameter:
     -l [true, false, file], -log [true, false, file]        Log in der Konsole oder in Datei, default: "false"
-    --loglvl [info, warning]                                Nur Informationen oder Warnungen loggen, default: "all"
+    -lvl [info, warning], --loglvl [info, warning]          Nur Informationen oder Warnungen loggen, default: "all"
     -h, --help                                              Diese Hilfenachricht anzeigen und Programm beenden
 
 Mithilfe von `-l` beziehungsweise `-log` lässt sich der Log entweder in der Konsole oder in einer Datei (im aktuellen Verzeichnis) ausgeben. 

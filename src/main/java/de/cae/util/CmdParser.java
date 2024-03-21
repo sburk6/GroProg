@@ -10,21 +10,48 @@ public class CmdParser {
     private static final String INPUT = "--input";
     private static final String OUTPUT = "--output";
     private static final String LOG = "--log";
-    private static final String Log_LEVEL = "--loglvl";
+    private static final String LOG_LEVEL = "--loglvl";
     private static final String HELP = "--help";
 
+    private String inputPath;
+    private String outputPath;
 
-
+    /**
+     * Erstellt eine neue Instanz und verarbeitet die übergebenen Argumente
+     *
+     * @param args Programmargumente
+     */
     public CmdParser(String[] args){
-
+        var log = LogOption.FALSE;
         for(var i = 0; i < args.length; ++i){
             switch (args[i]){
                 case INPUT, "-i" ->{
-
+                    this.inputPath = args[++i];
                 }
-                case OUTPUT, "-o" -> {}
-                case LOG, "-l" -> {}
-                case Log_LEVEL, "-lvl" -> {}
+                case OUTPUT, "-o" -> {
+                    this.outputPath = args[++i];
+                }
+                case LOG, "-l" -> {
+                    try{
+                        log = LogOption.getOption(args[++i]);
+                    } catch (IllegalArgumentException e) {
+                        LOGGER.log(Level.WARNING, "Konnte " + args[i]
+                                + " Keiner Log-Option (true, false und file mit false als default) zuordnen");
+                    }
+                }
+                case LOG_LEVEL, "-lvl" -> {
+                    Level logLevel;
+                    switch (args[++i]){
+                        case "info" -> logLevel = Level.INFO;
+                        case "warning" -> logLevel = Level.WARNING;
+                        default -> {
+                            logLevel = Level.ALL;
+                            LOGGER.log(Level.WARNING, "Konnte " + args[i]
+                                 + " keinem Log-Level (info, warning) zuordnen. 'All' wird als default angenommen.");
+                        }
+                    }
+                    ROOT_LOGGER.setLevel(logLevel);
+                }
                 case HELP, "-h" -> {
                     printHelp();
                     System.exit(0);
@@ -41,22 +68,8 @@ public class CmdParser {
     }
 
     private void printHelp(){
-        //TODO Beschreibung anpassen
-         System.out.println(
-                """
-                    Benutzung: -i <inputFile> -o <outputFile> (-l [true, false, file]) (-lvl [info, warning]) (-h)
-                    
-                    Kurzbeschreibung hier.
-                    
-                    Erforderliche Parameter:
-                    -i <inputFile>, --input <inputFile>                     Pfad der Eingabedatei
-                    -o <outputFile>, --output <outputFile>                  Pfad der Ausgabedatei
-                    
-                    Optionale Parameter:
-                    -l [true, false, file], -log [true, false, file]        Log in der Konsole oder in Datei, default: "false"
-                    -lvl [info, warning], --loglvl [info, warning]          Nur Informationen oder Warnungen loggen, default: "all"
-                    -h, --help                                              Diese Hilfenachricht anzeigen und Programm beenden
-                """);
+        //TODO Beschreibung anpassen (AUCH IN README!!!!)
+        System.out.println(helpMessage);
     }
 
     public enum LogOption {
@@ -78,4 +91,23 @@ public class CmdParser {
             return FALSE;
         }
     }
+
+
+
+    private final String helpMessage =
+            """
+                    Benutzung: -i <inputFile> -o <outputFile> (-l [true, false, file]) (-lvl [info, warning]) (-h)
+                    
+                    Kurzbeschreibung hier.
+                    
+                    Erforderliche Parameter:
+                    -i <inputFile>, --input <inputFile>                     Pfad der Eingabedatei
+                    -o <outputFile>, --output <outputFile>                  Pfad der Ausgabedatei
+                    
+                    Optionale Parameter:
+                    -l [true, false, file], -log [true, false, file]        Log in der Konsole oder in Datei, default: "false"
+                    -lvl [info, warning], --loglvl [info, warning]          Nur Informationen oder Warnungen loggen, default: "all"
+                    -h, --help                                              Diese Hilfenachricht anzeigen und Programm beenden
+            """;
+
 }
